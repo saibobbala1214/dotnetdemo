@@ -1,6 +1,6 @@
 FROM node:16.20.1-bullseye as builder
 
-WORKDIR /app
+WORKDIR /clientapp
 
 COPY . .
 
@@ -12,4 +12,4 @@ EXPOSE 4200
 
 FROM nginx
 
-COPY --from=builder /app/dist /usr/share/nginx/html
+COPY --from=builder /clientapp/dist /usr/share/nginx/html
