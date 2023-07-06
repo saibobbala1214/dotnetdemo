@@ -4,7 +4,7 @@ WORKDIR /clientapp
 
 COPY . .
 
-RUN npm install
+RUN npm install -y
 
 RUN npm run build
 
