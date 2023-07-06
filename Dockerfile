@@ -1,6 +1,6 @@
 FROM node:16.20.1-bullseye as builder
 
-WORKDIR /app
+WORKDIR /clientapp
 
 COPY . .
 
