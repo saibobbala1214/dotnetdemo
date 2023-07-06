@@ -1,10 +1,10 @@
 FROM node:16.20.1-bullseye as builder
 
-WORKDIR /clientapp
+WORKDIR /app
 
 COPY . .
 
-RUN npm install -y
+RUN npm install
 
 RUN npm run build
 
