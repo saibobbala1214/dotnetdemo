@@ -1,15 +1,28 @@
-FROM node:16.20.1-bullseye as builder
+FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
 
-WORKDIR /clientapp
+WORKDIR /app
 
-COPY . .
+RUN apt-get update
+ 
+RUN curl -sL https://deb.nodesource.com/setup_16.x  | bash -
 
-RUN npm install
+RUN apt-get -y install nodejs
 
-RUN npm run build
+COPY . ./
 
-EXPOSE 4200
+RUN dotnet restore
 
-FROM nginx
+RUN dotnet build "dotnet6.csproj" -c Release
 
-COPY --from=builder /clientapp/dist /usr/share/nginx/html
+RUN dotnet publish "dotnet6.csproj" -c Release -o publish
+
+
+FROM mcr.microsoft.com/dotnet/aspnet:6.0 AS base
+
+COPY --from=build /app/publish .
+
+ENV ASPNETCORE_URLS http://*:5000
+
+EXPOSE 5000
+
+ENTRYPOINT ["dotnet", "dotnet6.dll"]
