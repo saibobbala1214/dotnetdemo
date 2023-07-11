@@ -2,6 +2,9 @@ FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
 
 WORKDIR /app
 
+RUN groupadd -g 3000 bermtec \
+    && useradd -m -u 3000 -g 3000 dottest
+
 RUN apt-get update
  
 RUN curl -sL https://deb.nodesource.com/setup_16.x  | bash -
@@ -9,6 +12,10 @@ RUN curl -sL https://deb.nodesource.com/setup_16.x  | bash -
 RUN apt-get -y install nodejs
 
 COPY . ./
+
+RUN chown -R dottest:bermtec /app
+
+USER dottest
 
 RUN dotnet restore
 
