@@ -19,7 +19,7 @@ variables:
   imagePullSecret: 'bermtecacrshared1350031f-auth'
 
   # Agent VM image name
-  vmImageName: 'default'
+  vmImageName: 'Default'
 
 
 stages:
