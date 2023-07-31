@@ -19,7 +19,7 @@ variables:
   imagePullSecret: 'bermtecacrshared1350031f-auth'
 
   # Agent VM image name
-  vmImageName: 'test/BOBBALA'
+  vmImageName: 'test'
 
 
 stages:
