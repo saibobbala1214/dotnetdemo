@@ -13,7 +13,7 @@ variables:
   # Container registry service connection established during pipeline creation
   dockerRegistryServiceConnection: 'fc98da2d-17b1-4947-93d1-05cdecc54ce8'
   imageRepository: 'dotnetdemo'
-  containerRegistry: 'saibobbala1569/bermtecacrshared'#'bermtecacrshared.azurecr.io'
+  containerRegistry: 'bermtecacrshared.azurecr.io'
   dockerfilePath: '**/Dockerfile'
   tag: '$(Build.BuildId)'
   #imagePullSecret: 'bermtecacrshared1350031f-auth'
