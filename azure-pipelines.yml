@@ -1,82 +1,78 @@
-# ASP.NET Core
-# Build and test ASP.NET Core projects targeting .NET Core.
-# Add steps that run tests, create a NuGet package, deploy, and more:
-# https://docs.microsoft.com/azure/devops/pipelines/languages/dotnet-core
-
 trigger:
 - develop
 - feature/*
-- master
+- main
 
-pool:
-  name: 'Demo'
+
+resources:
+- repo: self
 
 variables:
-  buildConfiguration: 'Release'
-  dotNetFramework: 'net6.0'
-  repository: 'walmartpayment'
-  namespace: 'walmartdev'
-  k8sconnection: 'kubewalmartdev'
-  imagePullSecret: 'test'
+
+  # Container registry service connection established during pipeline creation
+  dockerRegistryServiceConnection: '9b32db99-91db-4c7c-bdb6-95b71197886a'
+  imageRepository: 'dotnetdemo'
+  containerRegistry: 'bermtecacrshared.azurecr.io'
+  dockerfilePath: '**/Dockerfile'
+  tag: '$(Build.BuildId)'
+  imagePullSecret: 'bermtecacrshared1228a207-auth'
+
+  # Agent VM image name
+  vmImageName: 'ubuntu-latest'
+
 
 stages:
-- stage: 'Build'
+- stage: Build
+  displayName: Build stage
   jobs:
-  - job: 'Build'
+  - job: Build
+    displayName: Build
+    pool:
+      vmImage: $(vmImageName)
     steps:
-      - task: Docker@2
-        inputs:
-          containerRegistry: 'ACRDocker'
-          repository: '$(repository)'
-          command: 'buildAndPush'
-          Dockerfile: '**/Dockerfile'
-          tags: |
-            latest
-            $(Build.BuildNumber)
+    - task: Docker@2
+      displayName: Build and push an image to container registry
+      inputs:
+        command: buildAndPush
+        repository: $(imageRepository)
+        dockerfile: $(dockerfilePath)
+        containerRegistry: $(dockerRegistryServiceConnection)
+        tags: |
+          $(tag)
 
-      - task: PublishPipelineArtifact@1
-        inputs:
-          artifactName: 'manifests'
-          path: 'manifests'
+    - upload: manifests
+      artifact: manifests
 
-- stage: 'Deploy'
-  displayName: 'Deployment to Dev'
+- stage: Deploy
+  displayName: Deploy stage
+  dependsOn: Build
+
   jobs:
   - deployment: Deploy
-    displayName: Deploy to AKS
+    displayName: Deploy
     pool:
-      name: 'Demo'   
-    environment: 'Dev'
+      vmImage: $(vmImageName)
+    environment: 'saibobbala1214dotnetdemo-1924.walmartdev'
     strategy:
       runOnce:
         deploy:
           steps:
-           - task: DownloadPipelineArtifact@2
-             displayName: 'Download Manifests'
-             inputs:
-                artifactName: 'manifests'
-                downloadPath: '$(System.ArtifactsDirectory)/manifests'
+          - task: KubernetesManifest@0
+            displayName: Create imagePullSecret
+            inputs:
+              action: createSecret
+              secretName: $(imagePullSecret)
+              dockerRegistryEndpoint: $(dockerRegistryServiceConnection)
 
-           - task: KubernetesManifest@0
-             displayName: Create imagePullSecret
-             inputs:
-                kubernetesServiceConnection: $(k8sconnection)
-                action: createSecret
-                secretName: $(imagePullSecret)
-                namespace: $(namespace)
-                dockerRegistryEndpoint: 'ACRDocker'
-              
-           - task: KubernetesManifest@0
-             displayName: Deploy
-             inputs:
-              kubernetesServiceConnection: $(k8sconnection)
+          - task: KubernetesManifest@0
+            displayName: Deploy to Kubernetes cluster
+            inputs:
               action: deploy
-              namespace: $(namespace)
               manifests: |
-                $(System.ArtifactsDirectory)/manifests/deployment.yaml
-                $(System.ArtifactsDirectory)/manifests/Service.yaml
-                $(System.ArtifactsDirectory)/manifests/Ingress.yaml
+                $(Pipeline.Workspace)/manifests/deployment.yaml
+                $(Pipeline.Workspace)/manifests/service.yaml
               imagePullSecrets: |
                 $(imagePullSecret)
-              arguments: '-n=walmartdev'
-  
+              containers: |
+                $(containerRegistry)/$(imageRepository):$(tag)
+
