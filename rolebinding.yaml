@@ -1,0 +1,14 @@
+# role-binding.yaml
+kind: RoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: rolebinding
+  namespace: test01
+subjects:
+- kind: ServiceAccount
+  name: rbac-test
+  namespace: test01
+roleRef:
+  kind: Role # or ClusterRole for a ClusterRole
+  name: berm12
+  apiGroup: rbac.authorization.k8s.io

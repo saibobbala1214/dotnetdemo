@@ -1,0 +1,86 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: dotnetdemo
+  namespace: dotnet-test
+  labels:
+    app: dotnetdemo
+spec:
+  replicas: 2
+  strategy:
+    rollingUpdate:
+      maxSurge: 25%
+      maxUnavailable: 25%
+    type: RollingUpdate
+  selector:
+    matchLabels:
+      app: dotnetdemo
+  template:
+    metadata:
+      labels:
+        app: dotnetdemo
+    spec:
+      tolerations:   # Add this tolerations section
+      - key: "project"
+        operator: "Equal"
+        value: "bermtec"
+        effect: "NoSchedule"
+      nodeSelector:
+        project: bermtec
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+            - matchExpressions:
+              - key: project
+                operator: In
+                values:
+                - bermtec
+          preferredDuringSchedulingIgnoredDuringExecution:
+          - weight: 1
+            preference:
+              matchExpressions:
+              - key: project
+                operator: In
+                values:
+                - bermtec
+      containers:
+      - name: dotnetdemo
+        image: saibobbala1569/dotnetdemo:1.0.1
+        ports:
+        - containerPort: 80
+        resources:
+          limits:
+            cpu: "200m"
+            memory: "300Mi"
+          requests:
+            cpu: "100m"
+            memory: "300Mi"
+        livenessProbe:
+          exec:
+            command:
+            - ls
+          initialDelaySeconds: 5
+          periodSeconds: 5
+          failureThreshold: 3
+          successThreshold: 1
+        readinessProbe:
+          exec:
+            command:
+            - ls
+          initialDelaySeconds: 5
+          periodSeconds: 10
+          failureThreshold: 3
+          successThreshold: 1
+          timeoutSeconds: 2
+        env:
+        - name: APP_CONFIG
+          valueFrom:
+            configMapKeyRef:
+              name: my-configmap
+              key: APP_CONFIG
+        - name: USERNAME
+          valueFrom:
+            secretKeyRef:
+              name: my-secrets
+              key: username
