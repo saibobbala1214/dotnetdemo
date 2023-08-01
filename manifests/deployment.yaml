@@ -2,7 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name:  walmartpayment-dev
-  namespace: walmartdev
+  namespace: prod
   labels:
     app:  walmartpayment-dev
 spec:
