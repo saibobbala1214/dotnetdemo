@@ -1,9 +1,7 @@
-# Deploy to Azure Kubernetes Service
-# Build and push image to Azure Container Registry; Deploy to Azure Kubernetes Service
-# https://docs.microsoft.com/azure/devops/pipelines/languages/docker
-
 trigger:
 - develop
+- feature/*
+- main
 
 resources:
 - repo: self
@@ -11,12 +9,12 @@ resources:
 variables:
 
   # Container registry service connection established during pipeline creation
-  dockerRegistryServiceConnection: '7611bd96-033f-40d4-b322-718282840900'
+  dockerRegistryServiceConnection: '0970130c-97f8-4eb1-9bfe-cec5fd643703'
   imageRepository: 'dotnetdemo'
   containerRegistry: 'bermtecacrshared.azurecr.io'
   dockerfilePath: '**/Dockerfile'
   tag: '$(Build.BuildId)'
-  imagePullSecret: 'bermtecacrshared513a-auth'
+  imagePullSecret: 'bermtecacrshared4815eb2a-auth'
 
   # Agent VM image name
   vmImageName: 'ubuntu-latest'
@@ -53,7 +51,7 @@ stages:
     displayName: Deploy
     pool:
       vmImage: $(vmImageName)
-    environment: 'saibobbala1214dotnetdemo-1932.walmartdev'
+    environment: 'saibobbala1214dotnetdemo-1071.walmartdev'
     strategy:
       runOnce:
         deploy:
@@ -62,7 +60,6 @@ stages:
             displayName: Create imagePullSecret
             inputs:
               action: createSecret
-              namespace: 'walmartdev'
               secretName: $(imagePullSecret)
               dockerRegistryEndpoint: $(dockerRegistryServiceConnection)
 
@@ -70,7 +67,6 @@ stages:
             displayName: Deploy to Kubernetes cluster
             inputs:
               action: deploy
-              namespace: 'walmartdev'
               manifests: |
                 $(Pipeline.Workspace)/manifests/deployment.yaml
                 $(Pipeline.Workspace)/manifests/Service.yaml
