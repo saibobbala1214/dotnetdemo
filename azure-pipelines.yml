@@ -13,6 +13,8 @@ variables:
   dockerfilePath: '**/Dockerfile'
   tag: '$(Build.BuildId)'
   imagePullSecret: 'bermtecacrshared513a-auth'
+  imagePullSecret-prod: 'bermtecacrshared142108ac-auth'
+  dockerRegistryServiceConnection-prod: '0db1bde5-d66b-44a4-bd97-84c7aa9d896a'
 
   # Agent VM image name
   vmImageName: 'ubuntu-latest'
@@ -93,20 +95,20 @@ stages:
             displayName: Create imagePullSecret
             inputs:
               action: createSecret
-              namespace: 'walmartdev'
-              secretName: $(imagePullSecret)
-              dockerRegistryEndpoint: $(dockerRegistryServiceConnection)
+              namespace: 'prod'
+              secretName: $(imagePullSecret-prod)
+              dockerRegistryEndpoint: $(dockerRegistryServiceConnection-prod)
 
           - task: KubernetesManifest@0
             displayName: Deploy to Kubernetes cluster
             inputs:
               action: deploy
               kubernetesServiceConnection: 'aks-prod'
-              namespace: 'walmartdev'
+              namespace: 'prod'
               manifests: |
                 $(Pipeline.Workspace)/manifests/deployment.yaml
                 $(Pipeline.Workspace)/manifests/Service.yaml
               imagePullSecrets: |
-                $(imagePullSecret)
+                $(imagePullSecret-prod)
               containers: |
                 $(containerRegistry)/$(imageRepository):$(tag)                
