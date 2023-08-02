@@ -103,7 +103,7 @@ stages:
             displayName: Deploy to Kubernetes cluster
             inputs:
               action: deploy
-              kubernetesServiceConnection: 'aks-prod'
+              kubernetesServiceConnection: 'prod'
               namespace: 'prod'
               manifests: |
                 $(Pipeline.Workspace)/manifests/deployment.yaml
