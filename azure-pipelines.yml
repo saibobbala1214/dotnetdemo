@@ -5,19 +5,13 @@ resources:
 - repo: self
 
 variables:
-
-  # Container registry service connection established during pipeline creation
   dockerRegistryServiceConnection: '7611bd96-033f-40d4-b322-718282840900'
   imageRepository: 'dotnetdemo'
   containerRegistry: 'bermtecacrshared.azurecr.io'
   dockerfilePath: '**/Dockerfile'
   tag: '$(Build.BuildId)'
   imagePullSecret: 'bermtecacrshared513a-auth'
-  imagePullSecret-prod: 'bermtecacrshared142108ac-auth'
-
-  # Agent VM image name
   vmImageName: 'ubuntu-latest'
-
 
 stages:
 - stage: Build
@@ -44,7 +38,6 @@ stages:
 - stage: DeployToDev
   displayName: Deploy to Dev
   dependsOn: Build
-
   jobs:
   - deployment: Deploy
     displayName: Deploy
@@ -79,7 +72,6 @@ stages:
 - stage: DeployToProd
   displayName: Deploy to Prod
   dependsOn: DeployToDev
-
   jobs:
   - deployment: Deploy
     displayName: Deploy
@@ -111,4 +103,4 @@ stages:
               imagePullSecrets: |
                 $(imagePullSecret)
               containers: |
-                $(containerRegistry)/$(imageRepository):$(tag)                
+                $(containerRegistry)/$(imageRepository):$(tag)
