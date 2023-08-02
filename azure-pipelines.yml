@@ -98,9 +98,10 @@ stages:
               dockerRegistryEndpoint: $(dockerRegistryServiceConnection)
 
           - task: KubernetesManifest@0
-            displayName: kubernetesServiceConnection
+            displayName: Deploy to Kubernetes cluster
             inputs:
               action: deploy
+              kubernetesServiceConnection: 'aks-prod'
               namespace: 'walmartdev'
               manifests: |
                 $(Pipeline.Workspace)/manifests/deployment.yaml
