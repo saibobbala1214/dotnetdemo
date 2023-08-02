@@ -85,7 +85,7 @@ stages:
     displayName: Deploy
     pool:
       vmImage: $(vmImageName)
-    environment: 'saibobbala1214dotnetdemo-1932.walmartdev'
+    environment: 'prod'
     strategy:
       runOnce:
         deploy:
