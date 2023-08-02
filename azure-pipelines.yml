@@ -13,6 +13,7 @@ variables:
   dockerfilePath: '**/Dockerfile'
   tag: '$(Build.BuildId)'
   imagePullSecret: 'bermtecacrshared513a-auth'
+  imagePullSecret-prod: 'bermtecacrshared142108ac-auth'
 
   # Agent VM image name
   vmImageName: 'ubuntu-latest'
