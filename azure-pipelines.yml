@@ -98,7 +98,7 @@ stages:
               dockerRegistryEndpoint: $(dockerRegistryServiceConnection)
 
           - task: KubernetesManifest@0
-            displayName: Deploy to Kubernetes cluster
+            displayName: kubernetesServiceConnection
             inputs:
               action: deploy
               namespace: 'walmartdev'
