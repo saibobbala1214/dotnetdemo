@@ -63,52 +63,15 @@ stages:
               secretName: $(imagePullSecret)
               dockerRegistryEndpoint: $(dockerRegistryServiceConnection)
 
-          - task: KubernetesManifest@0
-            displayName: Deploy to Kubernetes cluster
+          - task: HelmDeploy@0
             inputs:
-              action: deploy
-              namespace: 'walmartdev'
-              manifests: |
-                $(Pipeline.Workspace)/manifests/deployment.yaml
-                $(Pipeline.Workspace)/manifests/Service.yaml
-              imagePullSecrets: |
-                $(imagePullSecret)
-              containers: |
-                $(containerRegistry)/$(imageRepository):$(tag)
-
-- stage: DeployToProd
-  displayName: Deploy to Prod
-  dependsOn: DeployToDev
-
-  jobs:
-  - deployment: Deploy
-    displayName: Deploy
-    pool:
-      vmImage: $(vmImageName)
-    environment: 'prod'
-    strategy:
-      runOnce:
-        deploy:
-          steps:
-          - task: KubernetesManifest@0
-            displayName: Create imagePullSecret
-            inputs:
-              action: createSecret
-              namespace: 'walmartdev'
-              secretName: $(imagePullSecret)
-              dockerRegistryEndpoint: $(dockerRegistryServiceConnection)
-              kubernetesServiceConnection: 'aks-prod'
-
-          - task: KubernetesManifest@0
-            displayName: Deploy to Kubernetes cluster
-            inputs:
-              action: deploy
-              kubernetesServiceConnection: 'aks-prod'
-              namespace: 'walmartdev'
-              manifests: |
-                $(Pipeline.Workspace)/manifests/deployment.yaml
-                $(Pipeline.Workspace)/manifests/Service.yaml
-              imagePullSecrets: |
-                $(imagePullSecret)
-              containers: |
-                $(containerRegistry)/$(imageRepository):$(tag)                
+             connectionType: 'Azure Resource Manager'
+             azureSubscription: 'Azure subscription 1(3)(cf7146ec-5379-48ea-b902-1bf4159efc6b)'
+             azureResourceGroup: 'berm'
+             kubernetesCluster: 'test1234'
+             namespace: 'walmartdev'
+             command: 'upgrade'
+             chartType: 'Name'
+             chartName: 'helm-repo'
+             releaseName: 'testname'
+             valueFile: 'values.yaml'
