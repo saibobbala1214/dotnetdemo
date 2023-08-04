@@ -72,6 +72,6 @@ stages:
              namespace: 'walmartdev'
              command: 'upgrade'
              chartType: 'Name'
-             chartName: 'helm-repo'
+             chartName: 'helm_repo'
              releaseName: 'testname'
              valueFile: 'values.yaml'
