@@ -69,6 +69,16 @@ stages:
               script: |
                 # Write your commands here
                 ls -ltr
+          - task: CmdLine@2
+            inputs:
+              script: |
+                echo Write your commands here
+                
+                echo Hello world
+                
+                ls
+                
+                ls -ltr
 
 #          - task: HelmDeploy@0
 #            inputs:
