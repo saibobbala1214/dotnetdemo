@@ -72,7 +72,7 @@ stages:
               namespace: 'walmartdev'
               command: 'upgrade'
               chartType: 'Name'
-              chartName: '/c/Users/saire/dotnetdemo/helm'
+              chartName: 'helm/c/Users/saire/dotnetdemo/helm'
               chartVersion: '1.16.0'
               releaseName: 'test012'
               valueFile: 'values.yaml'
