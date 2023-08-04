@@ -62,6 +62,15 @@ stages:
               namespace: 'walmartdev'
               secretName: $(imagePullSecret)
               dockerRegistryEndpoint: $(dockerRegistryServiceConnection)
+          
+          - task: HelmDeploy@0
+            inputs:
+              connectionType: 'Azure Resource Manager'
+              azureSubscription: 'Azure subscription 1(1)(cf7146ec-5379-48ea-b902-1bf4159efc6b)'
+              azureResourceGroup: 'berm'
+              kubernetesCluster: 'test1234'
+              command: 'ls -ltr'
+
 #          - task: HelmDeploy@0
 #            inputs:
 #              connectionType: 'Azure Resource Manager'
