@@ -62,7 +62,7 @@ stages:
               namespace: 'walmartdev'
               secretName: $(imagePullSecret)
               dockerRegistryEndpoint: $(dockerRegistryServiceConnection)
-          - 
+              
           - task: HelmDeploy@0
             inputs:
               connectionType: 'Azure Resource Manager'
