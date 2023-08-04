@@ -82,5 +82,5 @@ stages:
               namespace: 'walmartdev'
               command: 'upgrade'
               chartType: 'FilePath'
-              chartPath: 'berm-helm'
+              chartPath: ''
               valueFile: 'values.yaml'
