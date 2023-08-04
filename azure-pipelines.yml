@@ -62,17 +62,14 @@ stages:
               namespace: 'walmartdev'
               secretName: $(imagePullSecret)
               dockerRegistryEndpoint: $(dockerRegistryServiceConnection)
-              
           - task: HelmDeploy@0
             inputs:
               connectionType: 'Azure Resource Manager'
-              azureSubscription: 'Azure subscription 1(4)(cf7146ec-5379-48ea-b902-1bf4159efc6b)'
+              azureSubscription: 'Azure subscription 1(cf7146ec-5379-48ea-b902-1bf4159efc6b)'
               azureResourceGroup: 'berm'
               kubernetesCluster: 'test1234'
-              namespace: 'walmartdev'
+              namespace: 'cks-berm'
               command: 'upgrade'
-              chartType: 'Path'
-              chartName: 'C:\Users\saire\dotnetdemo\helm'
-              chartVersion: '1.16.0'
-              releaseName: 'test012'
+              chartType: 'FilePath'
+              chartPath: 'helm'
               valueFile: 'values.yaml'
