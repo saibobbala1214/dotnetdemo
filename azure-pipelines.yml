@@ -71,5 +71,5 @@ stages:
               namespace: 'cks-berm'
               command: 'upgrade'
               chartType: 'FilePath'
-              chartPath: 'helm'
+              chartPath: 'berm-helm'
               valueFile: 'values.yaml'
