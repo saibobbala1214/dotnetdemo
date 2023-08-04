@@ -72,7 +72,7 @@ stages:
               namespace: 'walmartdev'
               command: 'upgrade'
               chartType: 'Name'
-              chartName: 'helm'
+              chartName: 'helmsss'
               chartVersion: '1.16.0'
               releaseName: 'test012'
               valueFile: 'values.yaml'
